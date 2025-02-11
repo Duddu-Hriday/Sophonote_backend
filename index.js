@@ -13,13 +13,14 @@ require('dotenv').config();
 const googleCredentials = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON || '{}');
 
 if (Object.keys(googleCredentials).length === 0) {
-  throw new Error("Google Cloud credentials are missing. Ensure GOOGLE_CREDENTIALS is set.");
+  throw new Error("Google Cloud credentials are missing. Ensure GOOGLE_APPLICATION_CREDENTIALS_JSON is set.");
 }
 
-const credentialsPath = "/tmp/gcp-credentials.json";
-fs.writeFileSync(credentialsPath, JSON.stringify(googleCredentials));
+console.log("Google Credentials Loaded Successfully");
 
-process.env.GOOGLE_APPLICATION_CREDENTIALS = credentialsPath;
+// Initialize Google Speech-to-Text Client with credentials
+const client = new speech.SpeechClient({ credentials: googleCredentials });
+
 console.log("Google Credentials: ",googleCredentials);
 
 
@@ -65,7 +66,7 @@ const upload = multer({
 });
 
 // Google Speech to Text Client
-const client = new speech.SpeechClient();
+// const client = new speech.SpeechClient();
 
 // Upload Route
 app.post('/upload', upload.single('audio'), async (req, res) => {
