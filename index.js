@@ -11,7 +11,11 @@ require('dotenv').config();
 process.env.GOOGLE_APPLICATION_CREDENTIALS = path.join(__dirname, "google_api.json");
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: "https://sophonote-frontend.vercel.app", // Allow only your frontend
+  methods: "GET,POST,PUT,DELETE", // Allow specific HTTP methods
+  credentials: true // Allow cookies if needed
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
