@@ -12,6 +12,9 @@ process.env.GOOGLE_APPLICATION_CREDENTIALS = path.join(__dirname, "google_api.js
 
 const app = express();
 app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 const PORT = process.env.PORT || 3000;
 
 // Supabase configuration
@@ -45,16 +48,38 @@ const client = new speech.SpeechClient();
 // Upload Route
 app.post('/upload', upload.single('audio'), async (req, res) => {
   if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
+  const userData = JSON.parse(req.body.user);
+  const email = userData.email;
+  
+  // const email = req.body;
+  console.log("UserEmail: ",email);
+  if (!email) {
+    return res.status(400).json({ error: "User Email is required" });
+  }
 
   try {
+    const { data: userData, error: userError } = await supabase
+      .from('users')
+      .select('user_id')
+      .eq('email', email)
+      .single();
+
+    if (userError || !userData) {
+      console.error("Supabase User Fetch Error:", userError);
+      return res.status(400).json({ error: "User not found in database." });
+    }
+
     // Convert speech to text
     const transcript = await convertSpeechToText(req.file.path);
-    const audio_id = "6af0fb46-3abb-453b-9e60-725b0d7bca7e";
-    const user_id = "a932d521-7cc3-4c9a-8399-fe344051d83a";
+    const audio_id = "23da28b8-0ec5-4604-ba32-6014e98b6ad4";
+    // const user_id = "3e31d1ff-1034-47c8-984a-31c288c8d525";
+    const user_id = userData.user_id;
+    // const audio_id = crypto.randomUUID();
+
     // Insert into Supabase
     const { data, error } = await supabase
       .from('transcriptions')
-      .insert([{audio_id: audio_id, user_id: user_id, text: transcript}]);
+      .insert([{ audio_id: audio_id, user_id: user_id, text: transcript }]);
 
     if (error) {
       console.error("Supabase Error:", error);
