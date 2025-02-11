@@ -61,11 +61,17 @@ const client = new speech.SpeechClient();
 // Upload Route
 app.post('/upload', upload.single('audio'), async (req, res) => {
   if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
-  const userData = JSON.parse(req.body.user);
-  const email = userData.email;
-  
+  let email;
+  try {
+    const userData = JSON.parse(req.body.user);
+    email = userData.email;
+  } catch (error) {
+    return res.status(400).json({ error: "Invalid user data format" });
+  }
+
+
   // const email = req.body;
-  console.log("UserEmail: ",email);
+  console.log("UserEmail: ", email);
   if (!email) {
     return res.status(400).json({ error: "User Email is required" });
   }
