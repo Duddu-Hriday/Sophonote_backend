@@ -8,10 +8,10 @@ const { createClient } = require('@supabase/supabase-js');
 require('dotenv').config();
 
 // Load Google Cloud credentials
-const credentialsPath = "/tmp/gcp-credentials.json";
+const googleCredentials = JSON.parse(process.env.GOOGLE_CREDENTIALS || '{}'); // Fallback to empty object
 fs.writeFileSync(credentialsPath, JSON.stringify(googleCredentials));
 process.env.GOOGLE_APPLICATION_CREDENTIALS = credentialsPath;
-
+console.log("Google Credentials:", process.env.GOOGLE_CREDENTIALS);
 
 
 const app = express();
