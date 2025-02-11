@@ -20,7 +20,7 @@ const credentialsPath = "/tmp/gcp-credentials.json";
 fs.writeFileSync(credentialsPath, JSON.stringify(googleCredentials));
 
 process.env.GOOGLE_APPLICATION_CREDENTIALS = credentialsPath;
-
+console.log("Google Credentials: ",googleCredentials);
 
 
 const app = express();
