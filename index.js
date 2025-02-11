@@ -31,18 +31,19 @@ const PORT = process.env.PORT || 3000;
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 
 // Configure Multer storage to preserve file extension
-const storage = multer.diskStorage({
-  destination: 'uploads/',
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname);
-    const filename = `${Date.now()}${ext}`;
-    cb(null, filename);
-  },
-});
+// const storage = multer.diskStorage({
+//   destination: 'uploads/',
+//   filename: (req, file, cb) => {
+//     const ext = path.extname(file.originalname);
+//     const filename = `${Date.now()}${ext}`;
+//     cb(null, filename);
+//   },
+// });
+const storage = multer.memoryStorage();
 
 const upload = multer({
   storage: storage,
-  limits: { fileSize: 1024 * 1024 * 1000 }, // 1GB limit
+  limits: { fileSize: 1024 * 1024 * 100 }, // 1GB limit
   fileFilter: (req, file, cb) => {
     if (file.mimetype.startsWith('audio/')) {
       cb(null, true);
@@ -80,7 +81,7 @@ app.post('/upload', upload.single('audio'), async (req, res) => {
     }
 
     // Convert speech to text
-    const transcript = await convertSpeechToText(req.file.path);
+    const transcript = await convertSpeechToText(req.file.buffer);
     const audio_id = "23da28b8-0ec5-4604-ba32-6014e98b6ad4";
     // const user_id = "3e31d1ff-1034-47c8-984a-31c288c8d525";
     const user_id = userData.user_id;
@@ -110,9 +111,9 @@ app.post('/upload', upload.single('audio'), async (req, res) => {
 
 
 // Function to convert Speech to Text
-async function convertSpeechToText(filePath) {
+async function convertSpeechToText(audioBuffer) {
   const audio = {
-    content: fs.readFileSync(filePath).toString("base64"),
+    content: audioBuffer.toString("base64"),
   };
 
   const config = {
