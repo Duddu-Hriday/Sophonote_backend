@@ -8,10 +8,19 @@ const { createClient } = require('@supabase/supabase-js');
 require('dotenv').config();
 
 // Load Google Cloud credentials
-const googleCredentials = JSON.parse(process.env.GOOGLE_CREDENTIALS || '{}'); // Fallback to empty object
+
+
+const googleCredentials = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON || '{}');
+
+if (Object.keys(googleCredentials).length === 0) {
+  throw new Error("Google Cloud credentials are missing. Ensure GOOGLE_CREDENTIALS is set.");
+}
+
+const credentialsPath = "/tmp/gcp-credentials.json";
 fs.writeFileSync(credentialsPath, JSON.stringify(googleCredentials));
+
 process.env.GOOGLE_APPLICATION_CREDENTIALS = credentialsPath;
-console.log("Google Credentials:", process.env.GOOGLE_CREDENTIALS);
+
 
 
 const app = express();
