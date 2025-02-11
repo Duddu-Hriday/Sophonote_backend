@@ -8,7 +8,9 @@ const { createClient } = require('@supabase/supabase-js');
 require('dotenv').config();
 
 // Load Google Cloud credentials
-process.env.GOOGLE_APPLICATION_CREDENTIALS = path.join(__dirname, "google_api.json");
+const googleCredentials = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON);
+process.env.GOOGLE_APPLICATION_CREDENTIALS = googleCredentials;
+
 
 const app = express();
 app.use(cors({
