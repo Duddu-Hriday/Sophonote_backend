@@ -1,19 +1,15 @@
 const express = require('express');
 const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
 const speech = require('@google-cloud/speech');
 const cors = require("cors");
 const { createClient } = require('@supabase/supabase-js');
 require('dotenv').config();
 
 // Load Google Cloud credentials
-const fs = require('fs');
-const path = require('path');
-
-const credentialsPath = path.join(__dirname, 'gcloud_credentials.json');
-fs.writeFileSync(credentialsPath, process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON);
-
-process.env.GOOGLE_APPLICATION_CREDENTIALS = credentialsPath;
-
+const googleCredentials = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON);
+process.env.GOOGLE_APPLICATION_CREDENTIALS = googleCredentials;
 
 
 const app = express();
