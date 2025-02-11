@@ -18,6 +18,8 @@ app.use(cors({
   credentials: true, // Allow cookies if needed
 }));
 
+app.options('*', cors()); // Handle preflight requests
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
