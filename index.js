@@ -8,8 +8,10 @@ const { createClient } = require('@supabase/supabase-js');
 require('dotenv').config();
 
 // Load Google Cloud credentials
-const googleCredentials = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON);
-process.env.GOOGLE_APPLICATION_CREDENTIALS = googleCredentials;
+const credentialsPath = "/tmp/gcp-credentials.json";
+fs.writeFileSync(credentialsPath, JSON.stringify(googleCredentials));
+process.env.GOOGLE_APPLICATION_CREDENTIALS = credentialsPath;
+
 
 
 const app = express();
@@ -78,6 +80,10 @@ app.post('/upload', upload.single('audio'), async (req, res) => {
     if (userError || !userData) {
       console.error("Supabase User Fetch Error:", userError);
       return res.status(400).json({ error: "User not found in database." });
+    }
+
+    if (!req.file.buffer) {
+      return res.status(400).json({ error: "File buffer is empty" });
     }
 
     // Convert speech to text
