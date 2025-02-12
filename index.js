@@ -21,7 +21,7 @@ console.log("Google Credentials Loaded Successfully");
 // Initialize Google Speech-to-Text Client with credentials
 const client = new speech.SpeechClient({ credentials: googleCredentials });
 
-console.log("Google Credentials: ",googleCredentials);
+// console.log("Google Credentials: ",googleCredentials);
 
 
 const app = express();
@@ -81,7 +81,7 @@ app.post('/upload', upload.single('audio'), async (req, res) => {
 
 
   // const email = req.body;
-  console.log("UserEmail: ", email);
+  // console.log("UserEmail: ", email);
   if (!email) {
     return res.status(400).json({ error: "User Email is required" });
   }

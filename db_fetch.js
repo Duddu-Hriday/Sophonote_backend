@@ -15,7 +15,7 @@ async function getTables() {
         return;
     }
 
-    console.log('Tables:', data);
+    // console.log('Tables:', data);
 }
 
 getTables();
