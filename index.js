@@ -154,7 +154,7 @@ async function convertSpeechToText(audioBuffer) {
 app.use('/uploads', express.static('uploads'));
 app.get("/", (req, res) => {
   // res.send("Speech-to-Text API is running");
-  res.send("Backend is working perfectly");
+  res.send(googleCredentials);
 });
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
